@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE-edge">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="../assets/sprites/Icon.png" rel="icon" type="image/png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+    <link href="../code/css/stylesheet.css" rel="stylesheet" type="text/css">
+    
+    
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getDatabase, ref, child, get, set, update, remove, query, orderByChild, limitToLast} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+        
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+          apiKey: "AIzaSyC4vB9wPKUGKGjYXARboTHM7u9QojNJfkQ",
+          authDomain: "rising-flames.firebaseapp.com",
+          databaseURL: "https://rising-flames-default-rtdb.europe-west1.firebasedatabase.app",
+          projectId: "rising-flames",
+          storageBucket: "rising-flames.appspot.com",
+          messagingSenderId: "865172881261",
+          appId: "1:865172881261:web:8283aa932e1e0c2fa2e464",
+          measurementId: "G-S567ZXQTWF"
+        };
+        
+        // Initialize the Firebase application with the given configuration
+        const app = initializeApp(firebaseConfig);
+        // Get a reference to the Firebase Realtime Database
+        const db = getDatabase(app);
+
+        // Create a query to get the top 5 user scores, ordered by score
+        const highScoresRef = query(ref(db, 'user'), orderByChild('score'), limitToLast(5));
+        const highScores = [];
+
+        document.addEventListener("DOMContentLoaded", function() {
+            document.getElementById("submit").addEventListener('click', function(e) {
+                // Submit the score to the database under the 'user' node, with the username as the key
+                set(ref(db, 'user/' + document.getElementById("username").value), {
+                    username: document.getElementById("username").value,
+                    score: score
+                }).then(() => {
+                    
+                }).catch((error) => {
+                    alert("Failed to submit score: " + error.message);
+                });
+            });
+        });
+
+        // Obtén las 5 mejores puntuaciones
+        get(highScoresRef).then((snapshot) => {
+            if (snapshot.exists()) {
+                let scores = snapshot.val();
+                // Ordena las puntuaciones de mayor a menor
+                let sortedScores = Object.values(scores).sort((a, b) => b.score - a.score);
+                // Muestra las 5 mejores puntuaciones
+                let highScoresTable = document.getElementById("highScoresTable").getElementsByTagName('tbody')[0];
+
+                // Limpiar la tabla antes de agregar nuevas filas
+                highScoresTable.innerHTML = '';
+                
+                for (let i = 0; i < Math.min(5, sortedScores.length); i++) {
+                    //let scoreEntry = sortedScores[i];
+                    //console.log(`Rank: ${i+1}, Username: ${scoreEntry.username}, Score: ${scoreEntry.score}`);
+                    let scoreEntry = sortedScores[i];
+                    let row = highScoresTable.insertRow();
+                    let rankCell = row.insertCell(0);
+                    let usernameCell = row.insertCell(1);
+                    let scoreCell = row.insertCell(2);
+                    rankCell.innerHTML = i + 1;
+                    usernameCell.innerHTML = scoreEntry.username;
+                    scoreCell.innerHTML = scoreEntry.score;
+                }
+            } else {
+                console.log("No data available");
+            }
+        }).catch((error) => {
+            console.error(error);
+        });
+
+    </script>
+
+
+    <script src="../code/src/box2d/Box2D_v2.3.1_min.js"></script>
+    <script src="../code/src/box2d/embox2d-helpers.js"></script>
+    <script src="../code/src/box2d/embox2d-html5canvas-debugDraw.js"></script>
+    <script src="../code/src/utils/utils.js"></script>
+    <script src="../code/src/utils/gameobjects.js"></script>
+    <script src="../code/src/utils/input.js"></script>
+    <script src="../code/src/utils/sprite.js"></script>
+
+    <script src="../code/src/mainMenu.js"></script>
+    <script src="../code/src/main.js"></script>
+    <script src="../code/src/gameScene.js"></script>
+    <script src="../code/src/player.js"></script>
+    <script src="../code/src/windowNpc.js"></script>
+    <script src="../code/src/camera.js"></script>
+    <script src="../code/src/truck.js"></script>
+    <script src="../code/src/enemy.js"></script>
+    <script src="../code/src/trampoline.js"></script>
+    <script src="../code/src/background.js"></script>
+    <script src="../code/src/gameOverScene.js"></script>
+    
+
+    <meta name="author" content="Ivan Rodriguez Lozano">
+    <title>Rising Flames</title>
+</head>
+<body>
+    <div id="container">
+        <canvas id="myCanvas" width="1000" height="850"></canvas>
+        <div id="mainMenu">
+            <h1>Rising Flames</h1>
+            <div class="menuButton" id="menuStart">Start</div>
+            <div class="menuButton" id="menuCredits">Credits</div>
+            <div class="menuButton" id="menuOptions"></div>
+            <div class="menuButton" id="menuLeaderboard"></div>
+
+            <div id="credits">
+                <!-- TODO -> Credits text -->
+            </div>
+        </div>
+        <div class="menuButton" id="return"></div>
+        <div id="gameOver">
+            <div id="nickSubmit">
+                <h2>Game Over</h2>
+                <input type="text" id="username" placeholder="Enter your nick">
+                <button id="submit">Submit</button>
+            </div>
+            <div id="highScores">
+                <h3>High Scores</h3>
+                <table id="highScoresTable">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Username</th>
+                            <th>Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="controls">
+            <h3>Controls</h3>
+            <ul>
+                <li>Move Right: Right Arrow</li>
+                <li>Move Left: Left Arrow</li>
+                <li>Jump: Spacebar</li>
+                <li>Grab: E</li>
+                <li>Release: Q</li>
+            </ul>
+            <div>
+                <label for="volumeSlider">Volume:</label>
+                <input type="range" id="volumeSlider" name="volumeSlider" min="0" max="100" value="50">
+            </div>
+        </div>
+    </div>
+
+    
+</body>
+</html>
