@@ -2,6 +2,8 @@
 
 ¡Bienvenido a Rising Flames! Un emocionante videojuego de navegador desarrollado con HTML5, CSS y JavaScript, utilizando la librería Box2D para implementar físicas realistas. Este proyecto fue creado como parte de la asignatura de Diseño Web Avanzado y tiene como objetivo aplicar conceptos de diseño, animación y desarrollo interactivo.
 
+![RisingFlames](assets/screenShots/Screenshot_01.png) ![RisingFlames](assets/screenShots/Screenshot_02.png)
+
 ## 🛠 Descripción Técnica
 El juego incluye:
 
