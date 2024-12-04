@@ -13,26 +13,14 @@
 
     <link href="../code/css/stylesheet.css" rel="stylesheet" type="text/css">
     
-    
+    <script src="../code/src/firebase-config.js"></script>
     <script type="module">
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getDatabase, ref, child, get, set, update, remove, query, orderByChild, limitToLast} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
         // TODO: Add SDKs for Firebase products that you want to use
         // https://firebase.google.com/docs/web/setup#available-libraries
-        
-        // Your web app's Firebase configuration
-        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-        const firebaseConfig = {
-          apiKey: "AIzaSyC4vB9wPKUGKGjYXARboTHM7u9QojNJfkQ",
-          authDomain: "rising-flames.firebaseapp.com",
-          databaseURL: "https://rising-flames-default-rtdb.europe-west1.firebasedatabase.app",
-          projectId: "rising-flames",
-          storageBucket: "rising-flames.appspot.com",
-          messagingSenderId: "865172881261",
-          appId: "1:865172881261:web:8283aa932e1e0c2fa2e464",
-          measurementId: "G-S567ZXQTWF"
-        };
+
         
         // Initialize the Firebase application with the given configuration
         const app = initializeApp(firebaseConfig);
